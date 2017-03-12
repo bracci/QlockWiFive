@@ -112,7 +112,7 @@ LED-Test: Laesst einen waagerechten Streifen ueber das Display wandern.
 #define NONE_TECHNICAL_ZERO Zeigt die Null ohne den diagonalen Strich.
 
 
-Die Zeitzone in der sich die Uhr befindet. Wichtig fuer die NTP-GND-Abweichung und die Sommer-/Winterzeitumstellung.
+Die Zeitzone in der sich die Uhr befindet. Wichtig fuer den GMT-Versatz und die Sommer-/Winterzeitumstellung.
 
 #define TIMEZONE_PST
 #define TIMEZONE_MST
