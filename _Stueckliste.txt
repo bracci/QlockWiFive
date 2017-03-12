@@ -1,0 +1,18 @@
+1x 529618 Platine Hartpapier                   5,45 CHF
+1x   eBay WeMos D1 mini                        3,00 EUR
+
+115x eBay WS2812 RGB-LED (Neopixel)           17,00 EUR
+1x 567658 Schraubklemmblock Polzahl 4          0,60 CHF
+
+1x   eBay DS3231 RTC Modul                     1,00 EUR (optional)
+
+1x 145475 Fotowiderstand A9013                 1,95 CHF (optional)
+1x 405370 Kohleschicht-Widerstand 10kΩ         0,15 CHF (optional)
+1x 567588 Schraubklemmblock Polzahl 2          0,30 CHF (optional)
+
+1x   eBay HX1838 IR-Remote                     1,00 EUR (optional)
+1x 171085 IR-Empfaenger TSOP31240              2,25 CHF (optional)
+1x 567615 Schraubklemmblock Polzahl 3          0,45 CHF (optional)
+
+1x 567588 Schraubklemmblock Polzahl 2          0,30 CHF
+          5V Stromanschluss
