@@ -101,9 +101,9 @@ LED-Test: Laesst einen waagerechten Streifen ueber das Display wandern.
 ```
 ### Configuration.h
 ```
-HOSTNAME:                   Der Name der Uhr.
-OTA_PASS:                   Kennwort fuer "Over the Air" Updates.
-NTP_SERVER:                 Abzufragender NTP-Server.
+#define HOSTNAME            Der Name der Uhr.
+#define OTA_PASS            Kennwort fuer "Over the Air" Updates.
+#define NTP_SERVER          Abzufragender NTP-Server.
 #define RTC_BACKUP          Eine RTC als Backup verwenden.
 #define RTC_TEMP_OFFSET     Gibt an, um wieviel Grad die gemessene Temperatur (+ oder -) korrigiert werden soll.
                             Nur ganze Zahlen verwenden.

@@ -94,13 +94,13 @@
 D0 = NodeMCU_LED
 D1 = PIN_WIRE_SCL
 D2 = PIN_WIRE_SDA
-D3 = IR Sensor
+D3 = PIN_IR_RECEIVER
 D4 = ESP8266_LED
-D5 = Buzzer
+D5 = PIN_BUZZER
 D6 = nc
 D7 = PIN_LEDS_CLOCK
 D8 = PIN_LEDS_DATA
-A0 = LDR
+A0 = PIN_LDR
 ******************************************************************************/
 
 #define PIN_IR_RECEIVER D3
