@@ -3,42 +3,42 @@
 
 ### Features:
 ```
-Almost no electronics needed
-Only ESP8266 (NodeMCU or WeMos D1 mini) and an LED-stripe
-with optional support for RTC, LDR, Buzzer and IR-remote
-More than 30 types of LED stripes
-RGB and RGBW (experimental)
-Horizontal and vertial LED layout
-16 Languages
-NTP timesync
-Timezones
-DST
-Webserver to controll the clock
-OTA
-WiFi manager for initial setup via accesspoint
-(RGBW ist only tested with LPD8806 of the CLT2)
+Almost no electronics needed.
+Only ESP8266 (NodeMCU or WeMos D1 mini) and an LED-stripe.
+with optional support for RTC, LDR, Buzzer and IR-remote.
+Supports more than 30 types of LED stripes.
+RGB and RGBW (experimental).
+Horizontal and vertial LED layout.
+16 Languages.
+NTP timesync.
+Timezones.
+DST.
+Webserver to controll the clock.
+OTA.
+WiFi manager for initial setup via accesspoint.
+(RGBW ist only tested with LPD8806 of the CLT2.)
 ```
 ### Standard modes
 ```
-Time
-AM/PM
-Seconds
-Date
-Temperature (with RTC only)
-Alarm 1
-Alarm 2
+Time.
+AM/PM.
+Seconds.
+Date.
+Temperature (with RTC only).
+Alarm 1.
+Alarm 2.
 ```
 ### Extended modes
 ```
-Brightnesscontrol
-Color
-Fallbacktime
-Language
-Set Time
-"It is" on/off
-Set Date
-Nightmode on/off
-Testmode
+Brightnesscontrol.
+Color.
+Fallbacktime.
+Language.
+Set Time.
+"It is" on/off.
+Set Date.
+Nightmode on/off.
+Testmode.
 ```
 ### Needed libraries:
 ```
@@ -64,8 +64,6 @@ Sie gleicht die Zeit jede Stunde per NTP mit einem Zeitserver im Internet ab. Au
 Updates sind OTA moeglich. Dazu im Arduino IDE den ESP als Port auswaehlen.
 
 WiFi Manager: Wenn die Uhr sich beim Start mit keinem WLAN verbinden kann, schaltet sie einen AccessPoint ein. Dann ein Handy oder Tablet mit diesem verbinden und die WLAN Daten eingeben.
-
-Ein Video gibt es hier: https://www.youtube.com/watch?v=X_I5B-dErzE
 
 Die Firmware gibt es hier: https://github.com/ch570512/Qlockwork
 
@@ -109,7 +107,8 @@ NTP_SERVER:                 Abzufragender NTP-Server.
 #define RTC_BACKUP          Eine RTC als Backup verwenden.
 #define RTC_TEMP_OFFSET     Gibt an, um wieviel Grad die gemessene Temperatur (+ oder -) korrigiert werden soll.
                             Nur ganze Zahlen verwenden.
-#define BOARD_LED           Zeigt mit Hilfe der LED auf dem Board die Funktion der RTC an. Sie blinkt einmal pro Sekunde.
+#define BOARD_LED           Zeigt mit Hilfe der LED auf dem Board die Funktion der RTC an. Sie blinkt einmal
+                            pro Sekunde.
 #define NONE_TECHNICAL_ZERO Zeigt die Null ohne den diagonalen Strich.
 
 
@@ -161,9 +160,9 @@ Die Zeitzone in der sich die Uhr befindet. Wichtig fuer die NTP-GND-Abweichung u
 
 
 #define LED_RGB
-#define LED_RGBW  Da RGBW von FAST-LED (noch) nicht unterstuetzt wird, ist dies ein Hack welcher nur mit dem LPD8806 Treiber und dem
-                  Streifen der CLT2 getestet ist. Es ist zu vermuten, dass andere Streifen eine abweichende Ansteuerung verwenden und
-				  dehalb nicht korrekt funktionieren.
+#define LED_RGBW  Da RGBW von FAST-LED (noch) nicht unterstuetzt wird, ist dies ein Hack welcher nur mit dem
+                  LPD8806 Treiber und dem Streifen der CLT2 getestet ist. Es ist zu vermuten, dass andere
+				  Streifen eine abweichende Ansteuerung verwenden und dehalb nicht korrekt funktionieren.
 
 				  
 Alle von FAST-LED unterstützten LED-Treiber koennen verwendet werden:
@@ -178,7 +177,7 @@ UCS1903B, UCS1904, UCS2903, WS2801, WS2803, WS2811, WS2811_400, WS2812, WS2812B,
 #define IR_REMOTE  IR-Fernbedienung verwenden.
 
 Jede Fernbedienung kann verwendet werden. Es werden 6 Tasten unterstützt.
-Um die Fernbedienung anzulernen "#define DEBUG" einschalten und einen Knopf auf der Fernbedienung drücken.
+Um die Fernbedienung anzulernen "#define DEBUG" einschalten und einen Knopf auf der Fernbedienung druecken.
 Den in der seriellen Konsole angezeigten Code dann in die Datei "Configuration.h" schreiben.
 
 #define IR_CODE_ONOFF   16769565
