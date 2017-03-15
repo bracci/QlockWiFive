@@ -25,6 +25,7 @@ AM/PM.
 Seconds.
 Date.
 Temperature (with RTC only).
+Timer.
 Alarm 1.
 Alarm 2.
 ```
@@ -55,6 +56,8 @@ IRremoteESP8266 by Sebastien Warin
 via Web:
 https://github.com/PaulStoffregen/Time
 https://github.com/JChristensen/Timezone
+
+There is a warning from FastLED about SPI when compiling. Just ignore it.
 ```
 
 # QLOCKWORK
@@ -74,8 +77,12 @@ Anzeige AM/PM: Zeigt an, ob es vormittags (AM) oder nachmittags (PM) ist.
 Sekunden: Anzeige der Sekunden.
 Datum: Anzeige des aktuellen Tages und Monats.
 Temperatur: Anzeige der gemessenen Temperatur.
-Alarm1
-Alarm2
+Timer Set: Setzt den Minuten-Timer. Null schaltet den Timer ab. Der Timer startet sofort mit dem Druck auf + oder -.
+Timer: Anzeige der Restzeit wenn ein Timer gesetzt ist.
+Alarm1 ein/aus
+Alarm1: Setzt den ersten 24-Stunden-Alarm wenn Alarm1 "ein" ist.
+Alarm2 ein/aus
+Alarm2: Setzt den zweiten 24-Stunden-Alarm wenn Alarm2 "ein" ist.
 ```
 ### Erweiterte Modi
 ```
@@ -162,9 +169,9 @@ Die Zeitzone in der sich die Uhr befindet. Wichtig fuer den GMT-Versatz und die 
 #define LED_RGB
 #define LED_RGBW  Da RGBW von FAST-LED (noch) nicht unterstuetzt wird, ist dies ein Hack welcher nur mit dem
                   LPD8806 Treiber und dem Streifen der CLT2 getestet ist. Es ist zu vermuten, dass andere
-				  Streifen eine abweichende Ansteuerung verwenden und dehalb nicht korrekt funktionieren.
+                  Streifen eine abweichende Ansteuerung verwenden und dehalb nicht korrekt funktionieren.
 
-				  
+
 Alle von FAST-LED unterstützten LED-Treiber koennen verwendet werden:
 APA102, APA104, APA106, DOTSTAR, GW6205, GW6205_400, LPD1886, LPD1886_8BIT, LPD8806, NEOPIXEL, 
 P9813, PL9823, SK6812, SK6822, SK9822, SM16716, TM1803, TM1804, TM1809, TM1812, TM1829, UCS1903,
@@ -173,7 +180,7 @@ UCS1903B, UCS1904, UCS2903, WS2801, WS2803, WS2811, WS2811_400, WS2812, WS2812B,
 
 #define IR_LETTER_OFF  Schaltet die LED hinter dem IR-Sensor dauerhaft ab. Das verbessert den IR-Empfang.
                        Hier das K vor Uhr.
-			   
+
 #define IR_REMOTE  IR-Fernbedienung verwenden.
 
 Jede Fernbedienung kann verwendet werden. Es werden 6 Tasten unterstützt.

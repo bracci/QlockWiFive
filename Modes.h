@@ -16,6 +16,8 @@ typedef enum eMode : uint8_t {
 #ifdef RTC_BACKUP
 	STD_MODE_TEMP,
 #endif
+	STD_MODE_SET_TIMER,
+	STD_MODE_TIMER,
 	STD_MODE_ALARM_1,
 	STD_MODE_SET_ALARM_1,
 	STD_MODE_ALARM_2,

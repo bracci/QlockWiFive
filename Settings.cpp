@@ -105,7 +105,7 @@ void Settings::setNightOnTime(time_t nightOnTime) {
 }
 
 
-// Setzt alle Werte auf Defauleinstellungen
+// Setzt alle Werte auf Defaulteinstellungen
 void Settings::resetToDefault() {
 	mySettings.magicNumber = SETTINGS_MAGIC_NUMBER;
 	mySettings.version = SETTINGS_VERSION;

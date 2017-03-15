@@ -27,7 +27,7 @@ Eine Firmware der Selbstbau-QLOCKTWO
 #include "LedDriver.h"
 #include "Settings.h"
 
-#define FIRMWARE_VERSION "qw20170311"
+#define FIRMWARE_VERSION "qw20170315"
 
 /******************************************************************************
 Init
@@ -56,6 +56,9 @@ uint8_t fallBackCounter = 0;
 uint8_t lastHour = 0;
 uint8_t lastMinute = 0;
 uint8_t lastFiveMinute = 0;
+boolean timerSet = false;
+uint8_t timerMinutes = 0;
+time_t timer = 0;
 time_t lastTime = 0;
 uint8_t alarmOn = 0;
 uint8_t testColumn = 0;
@@ -271,6 +274,8 @@ void loop() {
 #ifdef RTC_BACKUP
 		case STD_MODE_TEMP:
 #endif
+		case STD_MODE_SET_TIMER:
+		case STD_MODE_TIMER:
 		case STD_MODE_ALARM_1:
 		case STD_MODE_SET_ALARM_1:
 		case STD_MODE_ALARM_2:
@@ -304,6 +309,14 @@ void loop() {
 		// Alarm
 		if (settings.getAlarm1() && (hour() == hour(settings.getAlarmTime1())) && (minute() == minute(settings.getAlarmTime1())) && (second() == 0)) alarmOn = 60;
 		if (settings.getAlarm2() && (hour() == hour(settings.getAlarmTime2())) && (minute() == minute(settings.getAlarmTime2())) && (second() == 0)) alarmOn = 60;
+
+		// Timer
+		if (timerSet && (now() == timer)) {
+			setMode(STD_MODE_SET_TIMER);
+			timerMinutes = 0;
+			timerSet = false;
+			alarmOn = 60;
+		}
 
 		// ggf. Laerm machen
 		if (alarmOn) {
@@ -401,6 +414,18 @@ void loop() {
 			DEBUG_PRINTLN(String(Rtc.GetTemperature().AsFloat() + RTC_TEMP_OFFSET));
 			break;
 #endif
+		case STD_MODE_SET_TIMER:
+			renderer.clearScreenBuffer(matrix);
+			renderer.setSmallText("TR", Renderer::TEXT_POS_TOP, matrix);
+			if (second() % 2 == 0) for (uint8_t i = 5; i < 10; i++) matrix[i] = 0;
+			else renderer.setSmallText(String(timerMinutes), Renderer::TEXT_POS_BOTTOM, matrix);
+			break;
+		case STD_MODE_TIMER:
+			renderer.clearScreenBuffer(matrix);
+			renderer.setSmallText("TR", Renderer::TEXT_POS_TOP, matrix);
+			renderer.setSmallText(String((timer - now() + 60) / 60), Renderer::TEXT_POS_BOTTOM, matrix);
+			DEBUG_PRINTLN(String(timer - now()));
+			break;
 		case STD_MODE_ALARM_1:
 			renderer.clearScreenBuffer(matrix);
 			renderer.setSmallText("A1", Renderer::TEXT_POS_TOP, matrix);
@@ -417,8 +442,8 @@ void loop() {
 			renderer.clearScreenBuffer(matrix);
 			if (second() % 2 == 0) {
 				renderer.setTime(hour(settings.getAlarmTime1()), minute(settings.getAlarmTime1()), settings.getLanguage(), matrix);
-				renderer.setAMPM(hour(settings.getAlarmTime1()), settings.getLanguage(), matrix);
 				renderer.clearEntryWords(settings.getLanguage(), matrix);
+				renderer.setAMPM(hour(settings.getAlarmTime1()), settings.getLanguage(), matrix);
 				renderer.activateAlarmLed(matrix);
 			}
 			break;
@@ -438,8 +463,8 @@ void loop() {
 			renderer.clearScreenBuffer(matrix);
 			if (second() % 2 == 0) {
 				renderer.setTime(hour(settings.getAlarmTime2()), minute(settings.getAlarmTime2()), settings.getLanguage(), matrix);
-				renderer.setAMPM(hour(settings.getAlarmTime2()), settings.getLanguage(), matrix);
 				renderer.clearEntryWords(settings.getLanguage(), matrix);
+				renderer.setAMPM(hour(settings.getAlarmTime2()), settings.getLanguage(), matrix);
 				renderer.activateAlarmLed(matrix);
 			}
 			break;
@@ -498,9 +523,9 @@ void loop() {
 			renderer.clearScreenBuffer(matrix);
 			if (second() % 2 == 0) {
 				renderer.setTime(hour(), minute(), settings.getLanguage(), matrix);
-				renderer.setAMPM(hour(), settings.getLanguage(), matrix);
 				renderer.setCorners(minute(), matrix);
 				renderer.clearEntryWords(settings.getLanguage(), matrix);
+				renderer.setAMPM(hour(), settings.getLanguage(), matrix);
 			}
 			break;
 		case EXT_MODE_IT_IS:
@@ -599,7 +624,7 @@ void modePressed() {
 		return;
 	}
 
-	//Nachmode abschalten
+	// Nachtmode abschalten
 	if (mode == STD_MODE_BLANK) {
 		setMode(STD_MODE_NORMAL);
 		return;
@@ -611,6 +636,9 @@ void modePressed() {
 	case STD_MODE_COUNT:
 	case EXT_MODE_COUNT:
 		setMode(STD_MODE_NORMAL);
+		break;
+	case STD_MODE_TIMER:
+		if (!timerSet) setMode(mode++);
 		break;
 	case STD_MODE_SET_ALARM_1:
 		if (!settings.getAlarm1()) setMode(STD_MODE_ALARM_2);
@@ -656,6 +684,11 @@ void buttonPlusPressed() {
 	DEBUG_PRINTLN("+ pressed.");
 	ScreenBufferNeedsUpdate = true;
 	switch (mode) {
+	case STD_MODE_SET_TIMER:
+		if (timerMinutes < 100) timerMinutes++;
+		timer = now() + timerMinutes * 60;
+		timerSet = true;
+		break;
 	case STD_MODE_ALARM_1:
 		settings.toggleAlarm1();
 		break;
@@ -746,6 +779,14 @@ void buttonMinusPressed() {
 	DEBUG_PRINTLN("- pressed.");
 	ScreenBufferNeedsUpdate = true;
 	switch (mode) {
+	case STD_MODE_SET_TIMER:
+		if (timerMinutes > 0) {
+			timerMinutes--;
+			timer = now() + timerMinutes * 60;
+			timerSet = true;
+		}
+		else timerSet = false;
+		break;
 	case STD_MODE_ALARM_1:
 		settings.toggleAlarm1();
 		break;
@@ -881,7 +922,6 @@ void setMode(Mode newmode) {
 void setLedsOff() {
 	DEBUG_PRINTLN("LEDs off.");
 	setMode(STD_MODE_BLANK);
-	ledDriver.shutDown();
 }
 
 // LEDs einschalten
@@ -937,7 +977,7 @@ time_t getNtpTime() {
 	}
 	DEBUG_PRINTLN("Wifi not connected. :(");
 	return now();
-	}
+}
 
 // NTP Paket senden
 void sendNTPpacket(IPAddress & address) {
@@ -1022,6 +1062,11 @@ void handle_TOGGLEBLANK() {
 void handle_BUTTON_TIME() {
 	String message = "<!doctype html><html><head><script>window.onload  = function() {window.location.replace('/')};</script></head><body></body></html>";
 	server.send(200, "text/html", message);
+	// Alarm abschalten
+	if (alarmOn) {
+		alarmOn = false;
+		digitalWrite(PIN_BUZZER, LOW);
+	}
 	settings.saveToEEPROM();
 #ifdef RTC_BACKUP
 	Rtc.SetDateTime(now());

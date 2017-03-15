@@ -314,11 +314,6 @@ void LedDriver::getBrightness() {
 	FastLED.getBrightness();
 }
 
-void LedDriver::shutDown() {
-	FastLED.clear();
-	FastLED.show();
-}
-
 void LedDriver::show() {
 	FastLED.show();
 }

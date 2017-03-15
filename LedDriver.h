@@ -27,7 +27,6 @@ class LedDriver {
     void setBrightness(uint8_t ledBrightness);
     void getBrightness();
     void show();
-    void shutDown();
 	void setPixel(uint8_t num, uint8_t color);
 
   private:
