@@ -20,19 +20,19 @@
 #endif
 
 class LedDriver {
-  public:
-    LedDriver();
-    void writeScreenBufferToLEDs(word matrix[16], uint8_t color);
-    void clear();
-    void setBrightness(uint8_t ledBrightness);
-    void getBrightness();
-    void show();
+public:
+	LedDriver();
+	void writeScreenBufferToLEDs(word matrix[16], uint8_t color);
+	void clear();
+	void setBrightness(uint8_t ledBrightness);
+	void getBrightness();
+	void show();
 	void setPixel(uint8_t num, uint8_t color);
 
-  private:
-    void setPixel(uint8_t x, uint8_t y, uint8_t color);
-    uint8_t getWhite(uint8_t red, uint8_t green, uint8_t blue);
-    CRGB leds[NUM_LEDS];
+private:
+	void setPixel(uint8_t x, uint8_t y, uint8_t color);
+	uint8_t getWhite(uint8_t red, uint8_t green, uint8_t blue);
+	CRGB leds[NUM_LEDS];
 };
 
 #endif

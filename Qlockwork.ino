@@ -27,7 +27,7 @@ Eine Firmware der Selbstbau-QLOCKTWO
 #include "LedDriver.h"
 #include "Settings.h"
 
-#define FIRMWARE_VERSION "qw20170315"
+#define FIRMWARE_VERSION "qw20170319"
 
 /******************************************************************************
 Init
@@ -53,6 +53,7 @@ uint8_t packetBuffer[48];
 Mode mode = STD_MODE_NORMAL;
 Mode lastMode = mode;
 uint8_t fallBackCounter = 0;
+uint8_t lastDay = 0;
 uint8_t lastHour = 0;
 uint8_t lastMinute = 0;
 uint8_t lastFiveMinute = 0;
@@ -68,6 +69,7 @@ uint8_t lv = 0;
 uint16_t minBrightness = 1023;
 uint16_t maxBrightness = 0;
 uint16_t lastValue = 0;
+int8_t maxColor = 36;
 #ifdef IR_REMOTE
 decode_results irDecodeResults;
 #endif
@@ -122,8 +124,6 @@ void setup() {
 	DEBUG_PRINTLN("QLOCKWORK");
 	DEBUG_PRINT("Firmware: ");
 	DEBUG_PRINTLN(FIRMWARE_VERSION);
-	DEBUG_PRINT("Free RAM: ");
-	DEBUG_PRINTLN(system_get_free_heap_size());
 
 	// LDR, Buzzer und LED initialisieren
 	DEBUG_PRINTLN("Stetting up LDR, Buzzer and LED.");
@@ -215,10 +215,14 @@ void setup() {
 #endif
 
 	// sonstiges
+	lastDay = day();
 	lastHour = hour();
 	lastFiveMinute = minute() / 5;
 	lastMinute = minute();
 	lastTime = now();
+
+	DEBUG_PRINT("Free RAM: ");
+	DEBUG_PRINTLN(system_get_free_heap_size());
 }
 
 /******************************************************************************
@@ -231,8 +235,15 @@ void loop() {
 	debug.debugFps();
 #endif
 
-	// Jede Stunde ausfuehren
+	// Jeden Tag ausfuehren
+	if (day() != lastDay) {
+		lastDay = day();
+		DEBUG_PRINTLN("Neuen Tag erreicht.");
+		//if (settings.getColor() < maxColor) settings.setColor(settings.getColor() + 1);
+		//else settings.setColor(0);
+	}
 
+	// Jede Stunde ausfuehren
 	if (hour() != lastHour) {
 		lastHour = hour();
 		DEBUG_PRINTLN("Volle Stunde erreicht.");
@@ -240,14 +251,12 @@ void loop() {
 
 	// Alle fuenf Minuten ausfuehren
 	// lastFiveMinute ist vom Typ uint8_t. Dadurch werden die Nachkommastellen verworfen.
-
 	if ((minute() / 5) != lastFiveMinute) {
 		lastFiveMinute = minute() / 5;
 		DEBUG_PRINTLN("Volle fuenf Minuten erreicht.");
 	}
 
 	// Jede Minute ausfuehren
-
 	if (minute() != lastMinute) {
 		lastMinute = minute();
 #ifdef DEBUG
@@ -257,7 +266,6 @@ void loop() {
 	}
 
 	// Jede Sekunde ausfuehren
-
 	if (now() != lastTime) {
 		lastTime = now();
 
@@ -326,7 +334,7 @@ void loop() {
 		}
 		else digitalWrite(PIN_BUZZER, LOW);
 
-		// Nachtmodus
+		// Nachtmodus ein/aus
 		if ((hour() == hour(settings.getNightOffTime())) && (minute() == minute(settings.getNightOffTime())) && (second() == 0)) setMode(STD_MODE_BLANK);
 		if ((hour() == hour(settings.getNightOnTime())) && (minute() == minute(settings.getNightOnTime())) && (second() == 0)) setMode(lastMode);
 	}
@@ -720,7 +728,7 @@ void buttonPlusPressed() {
 		DEBUG_PRINTLN(settings.getBrightness());
 		break;
 	case EXT_MODE_COLOR:
-		if (settings.getColor() < 36) settings.setColor(settings.getColor() + 1);
+		if (settings.getColor() < maxColor) settings.setColor(settings.getColor() + 1);
 		else settings.setColor(0);
 		break;
 	case EXT_MODE_TIMEOUT:
@@ -819,7 +827,7 @@ void buttonMinusPressed() {
 		break;
 	case EXT_MODE_COLOR:
 		if (settings.getColor() > 0) settings.setColor(settings.getColor() - 1);
-		else settings.setColor(36);
+		else settings.setColor(maxColor);
 		break;
 	case EXT_MODE_TIMEOUT:
 		if (settings.getTimeout() > 0) settings.setTimeout(settings.getTimeout() - 1);
@@ -1044,6 +1052,10 @@ void handleRoot() {
 	message += "<button onclick=\"window.location.href='/handle_BUTTON_PLUS'\">+</button>";
 	message += "<button onclick=\"window.location.href='/handle_BUTTON_MINUS'\">-</button>";
 	message += "<br><br>";
+#ifdef RTC_BACKUP
+	message += "Temperature: " + String(Rtc.GetTemperature().AsFloat() + RTC_TEMP_OFFSET) + "&#176;C / " + String((Rtc.GetTemperature().AsFloat() + RTC_TEMP_OFFSET) * 1.8 + 32) + "&#176;F";
+	message += "<br>";
+#endif
 	message += "<font size=2>";
 	message += "Firmware: ";
 	message += FIRMWARE_VERSION;

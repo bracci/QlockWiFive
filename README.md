@@ -10,7 +10,10 @@ Supports more than 30 types of LED stripes.
 RGB and RGBW (experimental).
 Horizontal and vertial LED layout.
 16 Languages.
+Timer.
+Alarm.
 NTP timesync.
+RTC timesync as backup.
 Timezones.
 DST.
 Webserver to controll the clock.
@@ -77,7 +80,8 @@ Anzeige AM/PM: Zeigt an, ob es vormittags (AM) oder nachmittags (PM) ist.
 Sekunden: Anzeige der Sekunden.
 Datum: Anzeige des aktuellen Tages und Monats.
 Temperatur: Anzeige der gemessenen Temperatur.
-Timer Set: Setzt den Minuten-Timer. Null schaltet den Timer ab. Der Timer startet sofort mit dem Druck auf + oder -.
+Timer Set: Setzt den Minuten-Timer. Null schaltet den Timer ab.
+           Der Timer startet sofort mit dem Druck auf + oder -.
 Timer: Anzeige der Restzeit wenn ein Timer gesetzt ist.
 Alarm1 ein/aus
 Alarm1: Setzt den ersten 24-Stunden-Alarm wenn Alarm1 "ein" ist.

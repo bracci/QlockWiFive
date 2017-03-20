@@ -5,7 +5,7 @@
 #ifndef COLORS_H
 #define COLORS_H
 
-typedef struct color_s {
+struct color_s {
 	uint8_t red;
 	uint8_t green;
 	uint8_t blue;
