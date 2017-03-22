@@ -5,7 +5,7 @@
 ```
 Almost no electronics needed.
 Only ESP8266 (NodeMCU or WeMos D1 mini) and an LED-stripe.
-with optional support for RTC, LDR, Buzzer and IR-remote.
+Optional support for RTC, LDR, Buzzer and IR-remote.
 Supports more than 30 types of LED stripes.
 RGB and RGBW (experimental).
 Horizontal and vertial LED layout.
@@ -135,6 +135,8 @@ Die Zeitzone in der sich die Uhr befindet. Wichtig fuer den GMT-Versatz und die 
 
 
 #define LDR                 Einen LDR fuer die Helligkeitsregelung verwenden.
+
+
 #define MIN_BRIGHTNESS 10   Minimale Helligkeit der LEDs im Bereich von 0 bis 255.
 #define MAX_BRIGHTNESS 255  Maxmale Helligkeit der LEDs im Bereich von 0 bis 255.
 

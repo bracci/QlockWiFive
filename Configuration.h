@@ -29,6 +29,9 @@
 
 #define NTP_SERVER "pool.ntp.org"
 
+//#define SYSLOG_SERVER "192.168.0.1"
+//#define SYSLOG_PORT 514
+
 #define RTC_BACKUP
 #define RTC_TEMP_OFFSET 0
 
@@ -116,10 +119,11 @@
 #endif // CONFIG_DEFAULT
 
 #ifdef CONFIG_QLOCKDEV
-
 #define HOSTNAME "QLOCKDEV"
 #define OTA_PASS "1234"
 #define NTP_SERVER "nostromo"
+#define SYSLOG_SERVER "nostromo-test"
+#define SYSLOG_PORT 514
 #define RTC_BACKUP
 #define RTC_TEMP_OFFSET 0
 #define BOARD_LED
@@ -155,6 +159,8 @@
 #define HOSTNAME "CLT2"
 #define OTA_PASS "1234"
 #define NTP_SERVER "nostromo"
+#define SYSLOG_SERVER "nostromo-test"
+#define SYSLOG_PORT 514
 #define RTC_BACKUP
 #define RTC_TEMP_OFFSET -5
 #define LDR

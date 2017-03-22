@@ -18,6 +18,7 @@ Eine Firmware der Selbstbau-QLOCKTWO
 #include <RtcDS3231.h>
 #include <TimeLib.h>
 #include <Timezone.h>
+#include <Syslog.h>
 #include "Configuration.h"
 #include "Debug.h"
 #include "Modes.h"
@@ -27,7 +28,7 @@ Eine Firmware der Selbstbau-QLOCKTWO
 #include "LedDriver.h"
 #include "Settings.h"
 
-#define FIRMWARE_VERSION "qw20170319"
+#define FIRMWARE_VERSION "qw20170322"
 
 /******************************************************************************
 Init
@@ -44,6 +45,9 @@ RtcDS3231<TwoWire> Rtc(Wire);
 #endif
 #ifdef IR_REMOTE
 IRrecv irrecv(PIN_IR_RECEIVER);
+#endif
+#ifdef SYSLOG_SERVER
+Syslog syslog(Udp, SYSLOG_SERVER, SYSLOG_PORT, HOSTNAME, "", LOG_KERN);
 #endif
 
 word matrix[16];
@@ -191,6 +195,11 @@ void setup() {
 	ArduinoOTA.setPassword((const char*)OTA_PASS);
 	ArduinoOTA.begin();
 
+#ifdef SYSLOG_SERVER
+	syslog.log(LOG_INFO, "Firmware: " + String(FIRMWARE_VERSION));
+	syslog.log(LOG_INFO, "Free RAM: " + String(system_get_free_heap_size()));
+#endif
+
 	// Zeitprovider setzen
 #ifdef RTC_BACKUP
 	Rtc.Begin();
@@ -239,6 +248,9 @@ void loop() {
 	if (day() != lastDay) {
 		lastDay = day();
 		DEBUG_PRINTLN("Neuen Tag erreicht.");
+#ifdef SYSLOG_SERVER
+		syslog.log(LOG_INFO, "Free RAM: " + String(system_get_free_heap_size()));
+#endif
 		//if (settings.getColor() < maxColor) settings.setColor(settings.getColor() + 1);
 		//else settings.setColor(0);
 	}
@@ -948,6 +960,9 @@ void setDisplayToToggle() {
 // Zeit von RTC holen
 time_t getRtcTime() {
 	DEBUG_PRINTLN("*** ESP set from RTC. ***");
+#ifdef SYSLOG_SERVER
+	syslog.log(LOG_INFO, "ESP set from RTC.");
+#endif
 	return Rtc.GetDateTime();
 }
 #endif
@@ -970,13 +985,22 @@ time_t getNtpTime() {
 				secsSince1900 |= (unsigned long)packetBuffer[43];
 #ifdef RTC_BACKUP
 				DEBUG_PRINTLN("*** RTC set from NTP. ***");
+#ifdef SYSLOG_SERVER
+				syslog.log(LOG_INFO, "RTC set from NTP.");
+#endif
 				Rtc.SetDateTime(timeZone.toLocal(secsSince1900 - 2208988800UL));
 #endif
 				DEBUG_PRINTLN("*** ESP set from NTP. ***");
+#ifdef SYSLOG_SERVER
+				syslog.log(LOG_INFO, "ESP set from NTP.");
+#endif
 				return (timeZone.toLocal(secsSince1900 - 2208988800UL));
 			}
 		}
 		DEBUG_PRINTLN("No NTP Response. :(");
+#ifdef SYSLOG_SERVER
+		syslog.log(LOG_ERR, "No NTP Response.");
+#endif
 #ifdef RTC_BACKUP
 		return getRtcTime();
 #else
@@ -984,6 +1008,9 @@ time_t getNtpTime() {
 #endif
 	}
 	DEBUG_PRINTLN("Wifi not connected. :(");
+#ifdef SYSLOG_SERVER
+	syslog.log(LOG_ERR, "Wifi not connected.");
+#endif
 	return now();
 }
 
