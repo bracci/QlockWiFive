@@ -194,7 +194,8 @@ void setup() {
 	DEBUG_PRINTLN("Starting Arduino-OTA service.");
 	ArduinoOTA.setPassword((const char*)OTA_PASS);
 	ArduinoOTA.begin();
-
+	DEBUG_PRINT("Free RAM: ");
+	DEBUG_PRINTLN(system_get_free_heap_size());
 #ifdef SYSLOG_SERVER
 	syslog.log(LOG_INFO, "Firmware: " + String(FIRMWARE_VERSION));
 	syslog.log(LOG_INFO, "Free RAM: " + String(system_get_free_heap_size()));
@@ -229,9 +230,6 @@ void setup() {
 	lastFiveMinute = minute() / 5;
 	lastMinute = minute();
 	lastTime = now();
-
-	DEBUG_PRINT("Free RAM: ");
-	DEBUG_PRINTLN(system_get_free_heap_size());
 }
 
 /******************************************************************************
@@ -259,6 +257,9 @@ void loop() {
 	if (hour() != lastHour) {
 		lastHour = hour();
 		DEBUG_PRINTLN("Volle Stunde erreicht.");
+#if defined(RTC_BACKUP) && defined(SYSLOG_SERVER)
+		syslog.log(LOG_INFO, "Temperature: " + String(Rtc.GetTemperature().AsFloat() + RTC_TEMP_OFFSET) + "C / " + String((Rtc.GetTemperature().AsFloat() + RTC_TEMP_OFFSET) * 1.8 + 32) + "F");
+#endif
 	}
 
 	// Alle fuenf Minuten ausfuehren
@@ -999,7 +1000,7 @@ time_t getNtpTime() {
 		}
 		DEBUG_PRINTLN("No NTP Response. :(");
 #ifdef SYSLOG_SERVER
-		syslog.log(LOG_ERR, "No NTP Response.");
+		syslog.log(LOG_INFO, "No NTP Response.");
 #endif
 #ifdef RTC_BACKUP
 		return getRtcTime();
@@ -1009,7 +1010,7 @@ time_t getNtpTime() {
 	}
 	DEBUG_PRINTLN("Wifi not connected. :(");
 #ifdef SYSLOG_SERVER
-	syslog.log(LOG_ERR, "Wifi not connected.");
+	syslog.log(LOG_INFO, "Wifi not connected.");
 #endif
 	return now();
 }

@@ -19,6 +19,7 @@ DST.
 Webserver to controll the clock.
 OTA.
 WiFi manager for initial setup via accesspoint.
+Log to Syslog.
 (RGBW ist only tested with LPD8806 of the CLT2.)
 ```
 ### Standard modes
@@ -59,6 +60,7 @@ IRremoteESP8266 by Sebastien Warin
 via Web:
 https://github.com/PaulStoffregen/Time
 https://github.com/JChristensen/Timezone
+https://github.com/arcao/Syslog
 
 There is a warning from FastLED about SPI when compiling. Just ignore it.
 ```
