@@ -1,6 +1,6 @@
 /******************************************************************************
 QLOCKWORK
-Eine Firmware der Selbstbau-QLOCKTWO
+Eine Firmware der Selbstbau-QLOCKTWO.
 
 @mc      ESP8266
 @created 01.02.2017
@@ -28,7 +28,7 @@ Eine Firmware der Selbstbau-QLOCKTWO
 #include "LedDriver.h"
 #include "Settings.h"
 
-#define FIRMWARE_VERSION "qw20170322"
+#define FIRMWARE_VERSION "qw20170401"
 
 /******************************************************************************
 Init
@@ -47,7 +47,7 @@ RtcDS3231<TwoWire> Rtc(Wire);
 IRrecv irrecv(PIN_IR_RECEIVER);
 #endif
 #ifdef SYSLOG_SERVER
-Syslog syslog(Udp, SYSLOG_SERVER, SYSLOG_PORT, HOSTNAME, "", LOG_KERN);
+Syslog syslog(Udp, SYSLOG_SERVER, SYSLOG_PORT, HOSTNAME, "", SYSLOG_FACILITY);
 #endif
 
 word matrix[16];
@@ -62,7 +62,7 @@ uint8_t lastHour = 0;
 uint8_t lastMinute = 0;
 uint8_t lastFiveMinute = 0;
 boolean timerSet = false;
-uint8_t timerMinutes = 0;
+uint16_t timerMinutes = 0;
 time_t timer = 0;
 time_t lastTime = 0;
 uint8_t alarmOn = 0;
@@ -73,7 +73,7 @@ uint8_t lv = 0;
 uint16_t minBrightness = 1023;
 uint16_t maxBrightness = 0;
 uint16_t lastValue = 0;
-int8_t maxColor = 36;
+int8_t maxColor = sizeof(defaultColors) / 3 - 1;
 #ifdef IR_REMOTE
 decode_results irDecodeResults;
 #endif
@@ -156,7 +156,7 @@ void setup() {
 	matrix[9] = 0b0000000000000000;
 	ledBrightness = settings.getBrightness();
 	ledDriver.setBrightness(100);
-	ledDriver.writeScreenBufferToLEDs(matrix, 0);
+	ledDriver.writeScreenBufferToLEDs(matrix, 0); // Color 0: weiss
 	delay(1000);
 	WiFiManager wifiManager;
 	//wifiManager.resetSettings();
@@ -167,7 +167,7 @@ void setup() {
 		renderer.clearScreenBuffer(matrix);
 		renderer.setSmallText("ER", Renderer::TEXT_POS_TOP, matrix);
 		renderer.setSmallText("OR", Renderer::TEXT_POS_BOTTOM, matrix);
-		ledDriver.writeScreenBufferToLEDs(matrix, 1);
+		ledDriver.writeScreenBufferToLEDs(matrix, 1); // Color 1: rot
 		WiFi.mode(WIFI_OFF);
 		digitalWrite(PIN_BUZZER, HIGH);
 		delay(1500);
@@ -177,7 +177,7 @@ void setup() {
 		DEBUG_PRINTLN("WiFi connected.");
 		renderer.clearScreenBuffer(matrix);
 		renderer.setSmallText("OK", Renderer::TEXT_POS_MIDDLE, matrix);
-		ledDriver.writeScreenBufferToLEDs(matrix, 2);
+		ledDriver.writeScreenBufferToLEDs(matrix, 2); // Color 2: gruen
 		for (uint8_t i = 0; i < 3; i++) {
 			digitalWrite(PIN_BUZZER, HIGH);
 			delay(100);
@@ -198,7 +198,7 @@ void setup() {
 	DEBUG_PRINTLN(system_get_free_heap_size());
 #ifdef SYSLOG_SERVER
 	syslog.log(LOG_INFO, "Firmware: " + String(FIRMWARE_VERSION));
-	syslog.log(LOG_INFO, "Free RAM: " + String(system_get_free_heap_size()));
+	syslog.log(LOG_DEBUG, "Free RAM: " + String(system_get_free_heap_size()));
 #endif
 
 	// Zeitprovider setzen
@@ -247,7 +247,7 @@ void loop() {
 		lastDay = day();
 		DEBUG_PRINTLN("Neuen Tag erreicht.");
 #ifdef SYSLOG_SERVER
-		syslog.log(LOG_INFO, "Free RAM: " + String(system_get_free_heap_size()));
+		syslog.log(LOG_DEBUG, "Free RAM: " + String(system_get_free_heap_size()));
 #endif
 		//if (settings.getColor() < maxColor) settings.setColor(settings.getColor() + 1);
 		//else settings.setColor(0);
@@ -507,10 +507,8 @@ void loop() {
 #endif
 		case EXT_MODE_BRIGHTNESS:
 			renderer.clearScreenBuffer(matrix);
-			if (settings.getBrightness() > 0) {
-				for (uint8_t xb = 0; xb < map(settings.getBrightness(), 0, 255, 0, 9); xb++) {
-					for (uint8_t yb = 0; yb <= xb; yb++) matrix[9 - yb] |= 1 << (14 - xb);
-				}
+			for (uint8_t xb = 0; xb < map(settings.getBrightness(), 0, 255, 1, 10); xb++) {
+				for (uint8_t yb = 0; yb <= xb; yb++) matrix[9 - yb] |= 1 << (14 - xb);
 			}
 			break;
 		case EXT_MODE_COLOR:
@@ -803,10 +801,12 @@ void buttonMinusPressed() {
 	case STD_MODE_SET_TIMER:
 		if (timerMinutes > 0) {
 			timerMinutes--;
-			timer = now() + timerMinutes * 60;
-			timerSet = true;
+			if (timerMinutes == 0) timerSet = false;
+			else {
+				timer = now() + timerMinutes * 60;
+				timerSet = true;
+			}
 		}
-		else timerSet = false;
 		break;
 	case STD_MODE_ALARM_1:
 		settings.toggleAlarm1();
@@ -905,6 +905,10 @@ void remoteAction(uint32_t irDecodeResults) {
 #ifdef RTC_BACKUP
 		Rtc.SetDateTime(now());
 #endif
+		if (alarmOn) {
+			alarmOn = false;
+			digitalWrite(PIN_BUZZER, LOW);
+		}
 		setMode(STD_MODE_NORMAL);
 		break;
 	case IR_CODE_MODE:
@@ -962,7 +966,7 @@ void setDisplayToToggle() {
 time_t getRtcTime() {
 	DEBUG_PRINTLN("*** ESP set from RTC. ***");
 #ifdef SYSLOG_SERVER
-	syslog.log(LOG_INFO, "ESP set from RTC.");
+	syslog.log(LOG_DEBUG, "ESP set from RTC.");
 #endif
 	return Rtc.GetDateTime();
 }
@@ -987,20 +991,20 @@ time_t getNtpTime() {
 #ifdef RTC_BACKUP
 				DEBUG_PRINTLN("*** RTC set from NTP. ***");
 #ifdef SYSLOG_SERVER
-				syslog.log(LOG_INFO, "RTC set from NTP.");
+				syslog.log(LOG_DEBUG, "RTC set from NTP.");
 #endif
 				Rtc.SetDateTime(timeZone.toLocal(secsSince1900 - 2208988800UL));
 #endif
 				DEBUG_PRINTLN("*** ESP set from NTP. ***");
 #ifdef SYSLOG_SERVER
-				syslog.log(LOG_INFO, "ESP set from NTP.");
+				syslog.log(LOG_DEBUG, "ESP set from NTP.");
 #endif
 				return (timeZone.toLocal(secsSince1900 - 2208988800UL));
 			}
 		}
 		DEBUG_PRINTLN("No NTP Response. :(");
 #ifdef SYSLOG_SERVER
-		syslog.log(LOG_INFO, "No NTP Response.");
+		syslog.log(LOG_ERR, "No NTP Response.");
 #endif
 #ifdef RTC_BACKUP
 		return getRtcTime();
@@ -1009,11 +1013,8 @@ time_t getNtpTime() {
 #endif
 	}
 	DEBUG_PRINTLN("Wifi not connected. :(");
-#ifdef SYSLOG_SERVER
-	syslog.log(LOG_INFO, "Wifi not connected.");
-#endif
 	return now();
-}
+	}
 
 // NTP Paket senden
 void sendNTPpacket(IPAddress & address) {

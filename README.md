@@ -120,8 +120,7 @@ LED-Test: Laesst einen waagerechten Streifen ueber das Display wandern.
 #define RTC_BACKUP          Eine RTC als Backup verwenden.
 #define RTC_TEMP_OFFSET     Gibt an, um wieviel Grad die gemessene Temperatur (+ oder -) korrigiert werden soll.
                             Nur ganze Zahlen verwenden.
-#define BOARD_LED           Zeigt mit Hilfe der LED auf dem Board die Funktion der RTC an. Sie blinkt einmal
-                            pro Sekunde.
+#define BOARD_LED           Zeigt mit Hilfe der LED auf dem ESP die Funktion an. Sie blinkt einmal pro Sekunde.
 #define NONE_TECHNICAL_ZERO Zeigt die Null ohne den diagonalen Strich.
 
 

@@ -5,7 +5,7 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
-#include "Arduino.h"
+#include <Arduino.h>
 #include "Woerter_DE.h"
 #include "Woerter_DE_MKF.h"
 #include "Woerter_D3.h"
