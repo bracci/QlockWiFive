@@ -5,7 +5,7 @@
 #ifndef MODES_H
 #define MODES_H
 
-#include "Arduino.h"
+#include <Arduino.h>
 #include "Configuration.h"
 
 typedef enum eMode : uint8_t {

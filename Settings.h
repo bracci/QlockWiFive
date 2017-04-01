@@ -5,7 +5,7 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
-#include "Arduino.h"
+#include <Arduino.h>
 #include <EEPROM.h>
 
 #define SETTINGS_MAGIC_NUMBER 0x2A
