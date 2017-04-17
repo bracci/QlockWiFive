@@ -137,7 +137,7 @@ void LedDriver::setPixel(uint8_t num, uint8_t color) {
 	uint8_t red = defaultColors[color].red;
 	uint8_t green = defaultColors[color].green;
 	uint8_t blue = defaultColors[color].blue;
-	uint32_t ledColor_rgb = red * 0x010000 + green * 0x000100 + blue;
+	uint32_t ledColor_rgb = (red << 16) + (green << 8) + blue;
 #endif
 
 #ifdef LED_RGBW
@@ -150,6 +150,53 @@ void LedDriver::setPixel(uint8_t num, uint8_t color) {
 	blue -= white;
 	uint32_t ledColor_wbg = white * 0x010000 + blue * 0x000100 + green;
 	uint32_t ledColor_r = red * 0x010000;
+#endif
+
+#ifdef LED_LAYOUT_WIFIVE_MINI
+  byte ledNum;
+  if (num < 110) {
+    if ((num / 10) % 2 == 0) {
+      ledNum = num;
+    } else {
+      ledNum = ((num / 10) * 10) + 9 - (num % 10);
+    }
+    if (ledNum < 10)
+    {
+      leds[ledNum + 1] = ledColor_rgb;
+    }
+    else if (ledNum < 60)
+    {
+      leds[ledNum + 2] = ledColor_rgb;
+    }
+    else if (ledNum < 100)
+    {
+      leds[ledNum + 3] = ledColor_rgb;
+    }
+    else
+    {
+      leds[ledNum + 4] = ledColor_rgb;
+    }
+  } else {
+    switch (num) {
+      case 110:
+        leds[0] = ledColor_rgb;
+        break;
+      case 111:
+        leds[103] = ledColor_rgb;
+        break;
+      case 112:
+        leds[114] = ledColor_rgb;
+        break;
+      case 113:
+        leds[11] = ledColor_rgb;
+        break;
+      case 114:
+        leds[62] = ledColor_rgb;
+        break;
+      default:
+        ;
+    }
+  }
 #endif
 
 #ifdef LED_LAYOUT_HORIZONTAL
