@@ -157,8 +157,8 @@ void LedDriver::setPixel(uint8_t num, uint8_t color) {
       leds[num * 2 + 1] = ledColor_r;
     }
     else {
-      leds[(((num / 10) * 12) + 9 - (num % 10)) * 2] = ledColor_wbg;
-      leds[(((num / 10) * 12) + 9 - (num % 10)) * 2 + 1] = ledColor_r;
+      leds[(((num / 10) * 10) + 9 - (num % 10)) * 2] = ledColor_wbg;
+      leds[(((num / 10) * 10) + 9 - (num % 10)) * 2 + 1] = ledColor_r;
     }
   }
   else {

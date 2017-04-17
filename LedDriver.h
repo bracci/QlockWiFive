@@ -15,7 +15,7 @@
 #define NUM_LEDS 115
 #endif
 
-#ifdef LED_RGBW
+#if defined(LED_DRIVER_LPD8806) && defined(LED_RGBW)
 #define NUM_LEDS 230
 #endif
 
