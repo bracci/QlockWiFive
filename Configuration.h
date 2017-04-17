@@ -17,13 +17,14 @@
 #ifndef CONFIGURATION_H
 #define CONFIGURATION_H
 
-#define CONFIG_DEFAULT
+//#define CONFIG_DEFAULT
 //#define CONFIG_QLOCKDEV
 //#define CONFIG_CLT2
+#define CONFIG_WIFIVE_MINI
 
 #ifdef CONFIG_DEFAULT
 
-#define HOSTNAME "QLOCKWORK"
+#define HOSTNAME "QlockWiFiveMini"
 
 #define OTA_PASS "1234"
 
@@ -189,5 +190,51 @@
 #define SERIAL_SPEED 115200
 
 #endif // CONFIG_CLT2
+
+#ifdef CONFIG_WIFIVE_MINI
+
+#define HOSTNAME "QlockWiFiveMini"
+#define OTA_PASS "1234"
+#define NTP_SERVER "pool.ntp.org"
+//#define SYSLOG_SERVER "nostromo-test"
+//#define SYSLOG_FACILITY LOG_LOCAL1
+//#define SYSLOG_PORT 514
+//#define RTC_BACKUP
+//#define RTC_TEMP_OFFSET -5
+#define LDR
+#define MIN_BRIGHTNESS 5
+#define MAX_BRIGHTNESS 255
+#define TIMEZONE_CET
+//#define IR_LETTER_OFF
+#define IR_REMOTE
+#define IR_CODE_ONOFF   16769055
+#define IR_CODE_TIME    16752735
+#define IR_CODE_MODE    16720095
+#define IR_CODE_EXTMODE 16736415
+#define IR_CODE_PLUS    16734375
+#define IR_CODE_MINUS   16730295
+#define LED_LAYOUT_VERTICAL
+#define LED_RGB
+#define LED_DRIVER_NEOPIXEL
+//#define BOARD_LED
+#define PIN_IR_RECEIVER D6
+//#define PIN_LED         D4
+#define PIN_BUZZER      D8
+#define PIN_LEDS_DATA   D7
+#define PIN_LDR         A0
+#define BUTTONS
+/*
+ * Die Zeit in Millisekunden, innerhalb derer Prellungen der Taster nicht als Druecken zaehlen.
+ * (Und damit auch die Tastaturwiederholrate)
+ * Default: 300
+ */
+#define BUTTON_TRESHOLD 300
+#define BUTTONS_PRESSING_AGAINST LOW
+#define PIN_M_PLUS D0
+#define PIN_H_PLUS D5
+#define PIN_MODE D4
+#define SERIAL_SPEED 115200
+
+#endif // CONFIG_WIFIVE_MINI
 
 #endif
