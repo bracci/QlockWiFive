@@ -666,6 +666,7 @@ void loop() {
 /******************************************************************************
 "M+" & "H+" gedrueckt im BLANK MODE
 ******************************************************************************/
+#ifdef BUTTONS
 void doubleExtModePressed() {
   DEBUG_PRINTLN(F("Minutes plus AND hours plus pressed in STD_MODE_BLANK..."));
   DEBUG_FLUSH();
@@ -678,6 +679,7 @@ void doubleExtModePressed() {
   DEBUG_PRINTLN(F("..."));
   DEBUG_FLUSH();
 }
+#endif
 
 /******************************************************************************
 "Mode" gedrueckt

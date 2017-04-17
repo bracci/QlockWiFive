@@ -24,8 +24,8 @@
 
 class Button {
   public:
-    Button(byte pin, byte pressedAgainst);
-    Button(byte pin1, byte pin2, byte pressedAgainst);
+    Button(byte pin, byte pressedAgainst, uint16_t debounceTime = 300);
+    Button(byte pin1, byte pin2, byte pressedAgainst, uint16_t debounceTime = 300);
 
     boolean pressed();
     boolean pressedRaw();
@@ -36,6 +36,7 @@ class Button {
     boolean _doubleMode;
     byte _pressedAgainst;
     unsigned long _lastPressTime;
+    uint16_t _debounceTime;
 };
 
 #endif
