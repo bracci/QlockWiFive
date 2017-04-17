@@ -689,10 +689,10 @@ void modePressed() {
 		if (!timerSet) setMode(mode++);
 		break;
 	case STD_MODE_SET_ALARM_1:
-		if (!settings.getAlarm1()) setMode(STD_MODE_ALARM_2);
+		if (!settings.getAlarm1()) setMode(mode++);;
 		break;
 	case STD_MODE_SET_ALARM_2:
-		if (!settings.getAlarm2()) setMode(STD_MODE_NORMAL);
+		if (!settings.getAlarm2()) setMode(mode++);;
 		break;
 #ifdef LDR
 	case EXT_MODE_BRIGHTNESS:
