@@ -19,6 +19,7 @@ Eine Firmware der Selbstbau-QLOCKTWO.
 #include <TimeLib.h>
 #include <Timezone.h>
 #include <Syslog.h>
+#include "Button.h"
 #include "Configuration.h"
 #include "Debug.h"
 #include "Modes.h"
@@ -48,6 +49,12 @@ IRrecv irrecv(PIN_IR_RECEIVER);
 #endif
 #ifdef SYSLOG_SERVER
 Syslog syslog(Udp, SYSLOG_SERVER, SYSLOG_PORT, HOSTNAME, "", SYSLOG_FACILITY);
+#endif
+#ifdef BUTTONS
+Button minusButton(PIN_M_PLUS, BUTTONS_PRESSING_AGAINST);
+Button plusButton(PIN_H_PLUS, BUTTONS_PRESSING_AGAINST);
+Button extModeDoubleButton(PIN_M_PLUS, PIN_H_PLUS, BUTTONS_PRESSING_AGAINST);
+Button modeButton(PIN_MODE, BUTTONS_PRESSING_AGAINST);
 #endif
 
 word matrix[16];
@@ -389,6 +396,28 @@ void loop() {
 		remoteAction(irDecodeResults.value);
 		irrecv.resume();
 	}
+#endif
+
+#ifdef BUTTONS
+  // M+ und H+ im STD_MODE_BLANK gedrueckt?
+  if ((mode == STD_MODE_BLANK) && extModeDoubleButton.pressed()) {
+    doubleExtModePressed();
+  }
+  
+  // Taste Minuten++ (brighness++) gedrueckt?
+  if (plusButton.pressed()) {
+    buttonPlusPressed();
+  }
+
+  // Taste Stunden++ (brightness--) gedrueckt?
+  if (minusButton.pressed()) {
+    buttonMinusPressed();
+  }
+
+  // Taste Moduswechsel gedrueckt?
+  if (modeButton.pressed()) {
+    modePressed();
+  }
 #endif
 
 	// Wenn noetig, den Screenbuffer neu erstellen und in die LEDs schreiben
