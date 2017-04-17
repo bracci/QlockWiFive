@@ -140,8 +140,10 @@ void setup() {
 	DEBUG_PRINTLN("Stetting up LDR, Buzzer and LED.");
 	pinMode(PIN_LDR, INPUT);
 	pinMode(PIN_BUZZER, OUTPUT);
+#ifdef BOARD_LED
 	pinMode(PIN_LED, OUTPUT);
 	digitalWrite(PIN_LED, HIGH);
+#endif
 
 #ifdef IR_REMOTE
 	// IR-Empfaenger initialisieren
@@ -165,6 +167,8 @@ void setup() {
 	ledDriver.setBrightness(100);
 	ledDriver.writeScreenBufferToLEDs(matrix, 0); // Color 0: weiss
 	delay(1000);
+
+  WiFi.hostname(HOSTNAME);
 	WiFiManager wifiManager;
 	//wifiManager.resetSettings();
 	wifiManager.setTimeout(60);
