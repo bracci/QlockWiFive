@@ -660,6 +660,22 @@ void loop() {
 }
 
 /******************************************************************************
+"M+" & "H+" gedrueckt im BLANK MODE
+******************************************************************************/
+void doubleExtModePressed() {
+  DEBUG_PRINTLN(F("Minutes plus AND hours plus pressed in STD_MODE_BLANK..."));
+  DEBUG_FLUSH();
+  unsigned long initialMillis = millis();
+  while (minusButton.pressedRaw() && plusButton.pressedRaw()) {
+  }
+  setMode(EXT_MODE_START);
+  DEBUG_PRINT(F("Entering EXT_MODEs, mode is now "));
+  DEBUG_PRINT(mode);
+  DEBUG_PRINTLN(F("..."));
+  DEBUG_FLUSH();
+}
+
+/******************************************************************************
 "Mode" gedrueckt
 ******************************************************************************/
 
