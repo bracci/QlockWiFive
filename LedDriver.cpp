@@ -132,27 +132,64 @@ void LedDriver::setPixel(uint8_t x, uint8_t y, uint8_t color) {
 }
 
 void LedDriver::setPixel(uint8_t num, uint8_t color) {
-
-#ifdef LED_RGB
+#if defined(LED_DRIVER_LPD8806) && defined(LED_RGBW) 
+  uint8_t red = defaultColors[color].red;
+  uint8_t green = defaultColors[color].green;
+  uint8_t blue = defaultColors[color].blue;
+  uint8_t white = getWhite(red, green, blue);
+  red -= white;
+  green -= white;
+  blue -= white;
+  uint32_t ledColor_wbg = white * 0x010000 + blue * 0x000100 + green;
+  uint32_t ledColor_r = red * 0x010000;
+#else
 	uint8_t red = defaultColors[color].red;
 	uint8_t green = defaultColors[color].green;
 	uint8_t blue = defaultColors[color].blue;
 	uint32_t ledColor_rgb = (red << 16) + (green << 8) + blue;
 #endif
 
-#ifdef LED_RGBW
-	uint8_t red = defaultColors[color].red;
-	uint8_t green = defaultColors[color].green;
-	uint8_t blue = defaultColors[color].blue;
-	uint8_t white = getWhite(red, green, blue);
-	red -= white;
-	green -= white;
-	blue -= white;
-	uint32_t ledColor_wbg = white * 0x010000 + blue * 0x000100 + green;
-	uint32_t ledColor_r = red * 0x010000;
+#ifdef CONFIG_WIFIVE
+  uint8_t ledNum;
+  if (num < 110) {
+    if ((num / 10) % 2 == 0) {
+      leds[num * 2] = ledColor_wbg;
+      leds[num * 2 + 1] = ledColor_r;
+    }
+    else {
+      leds[(((num / 10) * 12) + 9 - (num % 10)) * 2] = ledColor_wbg;
+      leds[(((num / 10) * 12) + 9 - (num % 10)) * 2 + 1] = ledColor_r;
+    }
+  }
+  else {
+    switch (num) {
+    case 110:
+      leds[112 * 2] = ledColor_wbg;
+      leds[112 * 2 + 1] = ledColor_r;
+      break;
+    case 111:
+      leds[111 * 2] = ledColor_wbg;
+      leds[111 * 2 + 1] = ledColor_r;
+      break;
+    case 112:
+      leds[110 * 2] = ledColor_wbg;
+      leds[110 * 2 + 1] = ledColor_r;
+      break;
+    case 113:
+      leds[113 * 2] = ledColor_wbg;
+      leds[113 * 2 + 1] = ledColor_r;
+      break;
+    case 114:
+      leds[114 * 2] = ledColor_wbg;
+      leds[114 * 2 + 1] = ledColor_r;
+      break;
+    default:
+      break;
+    }
+  }
 #endif
 
-#ifdef LED_LAYOUT_WIFIVE_MINI
+#ifdef CONFIG_WIFIVE_MINI
   byte ledNum;
   if (num < 110) {
     if ((num / 10) % 2 == 0) {
@@ -199,154 +236,153 @@ void LedDriver::setPixel(uint8_t num, uint8_t color) {
   }
 #endif
 
-#ifdef LED_LAYOUT_HORIZONTAL
-#ifdef LED_RGB
-	if (num < 110) {
-		if ((num / 11) % 2 == 0) leds[num] = ledColor_rgb;
-		else leds[((num / 11) * 11) + 10 - (num % 11)] = ledColor_rgb;
-	}
-	else {
-		switch (num) {
-		case 110:
-			leds[111] = ledColor_rgb;
-			break;
-		case 111:
-			leds[112] = ledColor_rgb;
-			break;
-		case 112:
-			leds[113] = ledColor_rgb;
-			break;
-		case 113:
-			leds[110] = ledColor_rgb;
-			break;
-		case 114:
-			leds[114] = ledColor_rgb;
-			break;
-		default:
-			break;
-		}
-	}
-#endif // LED_RGB
-#ifdef LED_RGBW
-	if (num < 110) {
-		if ((num / 11) % 2 == 0) {
-			leds[num * 2] = ledColor_wbg;
-			leds[num * 2 + 1] = ledColor_r;
-		}
-		else {
-			leds[(((num / 11) * 11) + 10 - (num % 11)) * 2] = ledColor_wbg;
-			leds[(((num / 11) * 11) + 10 - (num % 11)) * 2 + 1] = ledColor_r;
-		}
-	}
-	else {
-		switch (num) {
-		case 110:
-			leds[111 * 2] = ledColor_wbg;
-			leds[111 * 2 + 1] = ledColor_r;
-			break;
-		case 111:
-			leds[112 * 2] = ledColor_wbg;
-			leds[112 * 2 + 1] = ledColor_r;
-			break;
-		case 112:
-			leds[113 * 2] = ledColor_wbg;
-			leds[113 * 2 + 1] = ledColor_r;
-			break;
-		case 113:
-			leds[110 * 2] = ledColor_wbg;
-			leds[110 * 2 + 1] = ledColor_r;
-			break;
-		case 114:
-			leds[114 * 2] = ledColor_wbg;
-			leds[114 * 2 + 1] = ledColor_r;
-			break;
-		default:
-			break;
-		}
-	}
-#endif // LED_RGBW
-#endif // LED_LAYOUT_HORIZONTAL
-
-#ifdef LED_LAYOUT_VERTICAL
-#ifdef LED_RGB
-	uint8_t ledNum;
-	if (num < 110) {
-		if ((num / 10) % 2 == 0) ledNum = num;
-		else ledNum = ((num / 10) * 10) + 9 - (num % 10);
-		if (ledNum < 10) leds[ledNum + 1] = ledColor_rgb;
-		else if (ledNum < 100) leds[ledNum + 2] = ledColor_rgb;
-		else leds[ledNum + 3] = ledColor_rgb;
-	}
-	else {
-		switch (num) {
-		case 110:
-			leds[0] = ledColor_rgb;
-			break;
-		case 111:
-			leds[102] = ledColor_rgb;
-			break;
-		case 112:
-			leds[113] = ledColor_rgb;
-			break;
-		case 113:
-			leds[11] = ledColor_rgb;
-			break;
-		case 114:
-			leds[114] = ledColor_rgb;
-			break;
-		default:
-			break;
-		}
-	}
-#endif // LED_RGB
-#ifdef LED_RGBW
-	uint8_t ledNum;
-	if (num < 110) {
-		if ((num / 10) % 2 == 0) ledNum = num;
-		else ledNum = ((num / 10) * 10) + 9 - (num % 10);
-		if (ledNum < 10) {
-			leds[(ledNum + 1) * 2] = ledColor_wbg;
-			leds[(ledNum + 1) * 2 + 1] = ledColor_r;
-		}
-		else {
-			if (ledNum < 100) {
-				leds[(ledNum + 2) * 2] = ledColor_wbg;
-				leds[(ledNum + 2) * 2 + 1] = ledColor_r;
-			}
-			else {
-				leds[(ledNum + 3) * 2] = ledColor_wbg;
-				leds[(ledNum + 3) * 2 + 1] = ledColor_r;
-			}
-		}
-	}
-	else {
-		switch (num) {
-		case 110:
-			leds[0 * 2] = ledColor_wbg;
-			leds[0 * 2 + 1] = ledColor_r;
-			break;
-		case 111:
-			leds[102 * 2] = ledColor_wbg;
-			leds[102 * 2 + 1] = ledColor_r;
-			break;
-		case 112:
-			leds[113 * 2] = ledColor_wbg;
-			leds[113 * 2 + 1] = ledColor_r;
-			break;
-		case 113:
-			leds[11 * 2] = ledColor_wbg;
-			leds[11 * 2 + 1] = ledColor_r;
-			break;
-		case 114:
-			leds[114 * 2] = ledColor_wbg;
-			leds[114 * 2 + 1] = ledColor_r;
-			break;
-		default:
-			break;
-		}
-	}
-#endif // LED_RGBW
-#endif // LED_LAYOUT_VERTICAL
+//#ifdef LED_LAYOUT_HORIZONTAL
+//#if defined(LED_DRIVER_LPD8806) && defined(LED_RGBW)
+//  if (num < 110) {
+//    if ((num / 11) % 2 == 0) {
+//      leds[num * 2] = ledColor_wbg;
+//      leds[num * 2 + 1] = ledColor_r;
+//    }
+//    else {
+//      leds[(((num / 11) * 11) + 10 - (num % 11)) * 2] = ledColor_wbg;
+//      leds[(((num / 11) * 11) + 10 - (num % 11)) * 2 + 1] = ledColor_r;
+//    }
+//  }
+//  else {
+//    switch (num) {
+//    case 110:
+//      leds[111 * 2] = ledColor_wbg;
+//      leds[111 * 2 + 1] = ledColor_r;
+//      break;
+//    case 111:
+//      leds[112 * 2] = ledColor_wbg;
+//      leds[112 * 2 + 1] = ledColor_r;
+//      break;
+//    case 112:
+//      leds[113 * 2] = ledColor_wbg;
+//      leds[113 * 2 + 1] = ledColor_r;
+//      break;
+//    case 113:
+//      leds[110 * 2] = ledColor_wbg;
+//      leds[110 * 2 + 1] = ledColor_r;
+//      break;
+//    case 114:
+//      leds[114 * 2] = ledColor_wbg;
+//      leds[114 * 2 + 1] = ledColor_r;
+//      break;
+//    default:
+//      break;
+//    }
+//  }
+//#else
+//	if (num < 110) {
+//		if ((num / 11) % 2 == 0) leds[num] = ledColor_rgb;
+//		else leds[((num / 11) * 11) + 10 - (num % 11)] = ledColor_rgb;
+//	}
+//	else {
+//		switch (num) {
+//		case 110:
+//			leds[111] = ledColor_rgb;
+//			break;
+//		case 111:
+//			leds[112] = ledColor_rgb;
+//			break;
+//		case 112:
+//			leds[113] = ledColor_rgb;
+//			break;
+//		case 113:
+//			leds[110] = ledColor_rgb;
+//			break;
+//		case 114:
+//			leds[114] = ledColor_rgb;
+//			break;
+//		default:
+//			break;
+//		}
+//	}
+//#endif // LED_RGB
+//#endif // LED_LAYOUT_HORIZONTAL
+//
+//#ifdef LED_LAYOUT_VERTICAL
+//#if defined(LED_DRIVER_LPD8806) && defined(LED_RGBW)
+//  uint8_t ledNum;
+//  if (num < 110) {
+//    if ((num / 10) % 2 == 0) ledNum = num;
+//    else ledNum = ((num / 10) * 10) + 9 - (num % 10);
+//    if (ledNum < 10) {
+//      leds[(ledNum + 1) * 2] = ledColor_wbg;
+//      leds[(ledNum + 1) * 2 + 1] = ledColor_r;
+//    }
+//    else {
+//      if (ledNum < 100) {
+//        leds[(ledNum + 2) * 2] = ledColor_wbg;
+//        leds[(ledNum + 2) * 2 + 1] = ledColor_r;
+//      }
+//      else {
+//        leds[(ledNum + 3) * 2] = ledColor_wbg;
+//        leds[(ledNum + 3) * 2 + 1] = ledColor_r;
+//      }
+//    }
+//  }
+//  else {
+//    switch (num) {
+//    case 110:
+//      leds[0 * 2] = ledColor_wbg;
+//      leds[0 * 2 + 1] = ledColor_r;
+//      break;
+//    case 111:
+//      leds[102 * 2] = ledColor_wbg;
+//      leds[102 * 2 + 1] = ledColor_r;
+//      break;
+//    case 112:
+//      leds[113 * 2] = ledColor_wbg;
+//      leds[113 * 2 + 1] = ledColor_r;
+//      break;
+//    case 113:
+//      leds[11 * 2] = ledColor_wbg;
+//      leds[11 * 2 + 1] = ledColor_r;
+//      break;
+//    case 114:
+//      leds[114 * 2] = ledColor_wbg;
+//      leds[114 * 2 + 1] = ledColor_r;
+//      break;
+//    default:
+//      break;
+//    }
+//  }
+//#else
+//	uint8_t ledNum;
+//	if (num < 110) {
+//		if ((num / 10) % 2 == 0) ledNum = num;
+//		else ledNum = ((num / 10) * 10) + 9 - (num % 10);
+//		if (ledNum < 10) leds[ledNum + 1] = ledColor_rgb;
+//		else if (ledNum < 100) leds[ledNum + 2] = ledColor_rgb;
+//		else leds[ledNum + 3] = ledColor_rgb;
+//	}
+//	else {
+//		switch (num) {
+//		case 110:
+//			leds[0] = ledColor_rgb;
+//			break;
+//		case 111:
+//			leds[102] = ledColor_rgb;
+//			break;
+//		case 112:
+//			leds[113] = ledColor_rgb;
+//			break;
+//		case 113:
+//			leds[11] = ledColor_rgb;
+//			break;
+//		case 114:
+//			leds[114] = ledColor_rgb;
+//			break;
+//		default:
+//			break;
+//		}
+//	}
+//#endif // LED_RGB
+//
+//#endif // LED_LAYOUT_VERTICAL
 }
 
 void LedDriver::clear() {
