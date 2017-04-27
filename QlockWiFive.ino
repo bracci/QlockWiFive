@@ -26,7 +26,11 @@ Eine Firmware der Selbstbau-QLOCKTWO.
 #include "Renderer.h"
 #include "Colors.h"
 #include "Languages.h"
-#include "LedDriver.h"
+#if defined(LED_DRIVER_SK6812) && defined(LED_RGBW)
+  #include "LedDriverNeopixel.h"
+#else
+  #include "LedDriver.h"
+#endif
 #include "Settings.h"
 
 #define FIRMWARE_VERSION "qw20170401"
@@ -36,7 +40,12 @@ Init
 ******************************************************************************/
 
 Renderer renderer;
-LedDriver ledDriver;
+#if defined(LED_DRIVER_SK6812) && defined(LED_RGBW)
+  LedDriverNeoPixel ledDriver(PIN_LEDS_DATA);
+#else
+  LedDriver ledDriver;
+#endif
+
 Settings settings;
 WiFiUDP Udp;
 ESP8266WebServer server(80);
@@ -369,6 +378,8 @@ void loop() {
 	server.handleClient();
 	ArduinoOTA.handle();
 
+  uint8_t ledBrightnessOld = ledBrightness;
+  
 	// LDR ggf. lesen und Helligkeit einstellen
 #ifdef LDR
 	if (!settings.getUseLdr()) ledBrightness = settings.getBrightness();
@@ -389,8 +400,11 @@ void loop() {
 #else 
 	ledBrightness = settings.getBrightness();
 #endif
+if(ledBrightness != ledBrightnessOld) {
 	ledDriver.setBrightness(constrain(ledBrightness, MIN_BRIGHTNESS, MAX_BRIGHTNESS));
-	ledDriver.show();
+  ScreenBufferNeedsUpdate = true;
+	//ledDriver.show();
+}
 
 #ifdef IR_REMOTE
 	// IR-Empfaenger abfragen und ggf. reagieren
