@@ -7,16 +7,33 @@
 
 #define FASTLED_ESP8266_RAW_PIN_ORDER
 #include <FastLED.h>
+
 #include <Arduino.h>
 #include "Colors.h"
 #include "Configuration.h"
 
 #ifdef LED_RGB
-#define NUM_LEDS 115
+  #ifdef MATRIX_XXL
+    #define NUM_LEDS 225
+  #else
+    #define NUM_LEDS 115
+  #endif
 #endif
 
-#if defined(LED_DRIVER_LPD8806) && defined(LED_RGBW)
-#define NUM_LEDS 230
+#ifdef LED_RGBW
+  #ifdef LED_DRIVER_LPD8806
+    #ifdef MATRIX_XXL
+      #define NUM_LEDS 460
+    #else
+      #define NUM_LEDS 230
+    #endif
+  #else
+    #ifdef MATRIX_XXL
+      #define NUM_LEDS 225
+    #else
+      #define NUM_LEDS 115
+    #endif
+  #endif
 #endif
 
 class LedDriver {
@@ -33,6 +50,7 @@ private:
 	void setPixel(uint8_t x, uint8_t y, uint8_t color);
 	uint8_t getWhite(uint8_t red, uint8_t green, uint8_t blue);
 	CRGB leds[NUM_LEDS];
+
 };
 
 #endif

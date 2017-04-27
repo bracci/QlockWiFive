@@ -150,44 +150,85 @@ void LedDriver::setPixel(uint8_t num, uint8_t color) {
 #endif
 
 #ifdef CONFIG_WIFIVE
-  uint8_t ledNum;
-  if (num < 110) {
-    if ((num / 10) % 2 == 0) {
-      leds[num * 2] = ledColor_wbg;
-      leds[num * 2 + 1] = ledColor_r;
+  #if defined(LED_RGBW) 
+    #ifdef LED_DRIVER_LPD8806
+      uint8_t ledNum;
+      if (num < 110) {
+        if ((num / 10) % 2 == 0) {
+          leds[num * 2] = ledColor_wbg;
+          leds[num * 2 + 1] = ledColor_r;
+        }
+        else {
+          leds[(((num / 10) * 10) + 9 - (num % 10)) * 2] = ledColor_wbg;
+          leds[(((num / 10) * 10) + 9 - (num % 10)) * 2 + 1] = ledColor_r;
+        }
+      }
+      else {
+        switch (num) {
+        case 110:
+          leds[112 * 2] = ledColor_wbg;
+          leds[112 * 2 + 1] = ledColor_r;
+          break;
+        case 111:
+          leds[111 * 2] = ledColor_wbg;
+          leds[111 * 2 + 1] = ledColor_r;
+          break;
+        case 112:
+          leds[110 * 2] = ledColor_wbg;
+          leds[110 * 2 + 1] = ledColor_r;
+          break;
+        case 113:
+          leds[113 * 2] = ledColor_wbg;
+          leds[113 * 2 + 1] = ledColor_r;
+          break;
+        case 114:
+          leds[114 * 2] = ledColor_wbg;
+          leds[114 * 2 + 1] = ledColor_r;
+          break;
+        default:
+          break;
+        }
+      }
+    #else // LED_DRIVER_LPD8806
+      
+    #endif // LED_DRIVER_LPD8806
+  #else // LED_RGBW
+    #ifdef MATRIX_XXL
+    if (num < 110) {
+      if ((num / 10) % 2 == 0) {
+        leds[num * 2] = ledColor_rgb;
+        leds[num * 2 + 1] = ledColor_rgb;
+      }
+      else {
+        leds[(((num / 10) * 10) + 9 - (num % 10)) * 2] = ledColor_rgb;
+        leds[(((num / 10) * 10) + 9 - (num % 10)) * 2 + 1] = ledColor_rgb;
+      }
     }
     else {
-      leds[(((num / 10) * 10) + 9 - (num % 10)) * 2] = ledColor_wbg;
-      leds[(((num / 10) * 10) + 9 - (num % 10)) * 2 + 1] = ledColor_r;
+      switch (num) {
+      case 110:
+        leds[222] = ledColor_rgb;
+        break;
+      case 111:
+        leds[221] = ledColor_rgb;
+        break;
+      case 112:
+        leds[220] = ledColor_rgb;
+        break;
+      case 113:
+        leds[223] = ledColor_rgb;
+        break;
+      case 114:
+        leds[224] = ledColor_rgb;
+        break;
+      default:
+        break;
+      }
     }
-  }
-  else {
-    switch (num) {
-    case 110:
-      leds[112 * 2] = ledColor_wbg;
-      leds[112 * 2 + 1] = ledColor_r;
-      break;
-    case 111:
-      leds[111 * 2] = ledColor_wbg;
-      leds[111 * 2 + 1] = ledColor_r;
-      break;
-    case 112:
-      leds[110 * 2] = ledColor_wbg;
-      leds[110 * 2 + 1] = ledColor_r;
-      break;
-    case 113:
-      leds[113 * 2] = ledColor_wbg;
-      leds[113 * 2 + 1] = ledColor_r;
-      break;
-    case 114:
-      leds[114 * 2] = ledColor_wbg;
-      leds[114 * 2 + 1] = ledColor_r;
-      break;
-    default:
-      break;
-    }
-  }
+    #endif
+  #endif // LED_RGBW
 #endif
+
 
 #ifdef CONFIG_WIFIVE_MINI
   byte ledNum;
