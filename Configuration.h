@@ -70,6 +70,7 @@
   
 //  #define LED_RGB
   #define LED_RGBW
+  #define MATRIX_XXL
   
 //  #define LED_DRIVER_APA102
 //  #define LED_DRIVER_APA104
@@ -79,11 +80,11 @@
 //  #define LED_DRIVER_GW6205_400
 //  #define LED_DRIVER_LPD1886
 //  #define LED_DRIVER_LPD1886_8BIT
-  #define LED_DRIVER_LPD8806
+//  #define LED_DRIVER_LPD8806
 //  #define LED_DRIVER_NEOPIXEL
 //  #define LED_DRIVER_P9813
 //  #define LED_DRIVER_PL9823
-//  #define LED_DRIVER_SK6812
+  #define LED_DRIVER_SK6812
 //  #define LED_DRIVER_SK6822
 //  #define LED_DRIVER_SK9822
 //  #define LED_DRIVER_SM16716
