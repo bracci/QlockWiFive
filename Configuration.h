@@ -17,8 +17,8 @@
 #ifndef CONFIGURATION_H
 #define CONFIGURATION_H
 
-//#define CONFIG_WIFIVE
-#define CONFIG_WIFIVE_MINI
+#define CONFIG_WIFIVE
+//#define CONFIG_WIFIVE_MINI
 
 #define USE_EVENTS
 
