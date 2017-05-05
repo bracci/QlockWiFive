@@ -17,8 +17,10 @@
 #ifndef CONFIGURATION_H
 #define CONFIGURATION_H
 
-#define CONFIG_WIFIVE
-//#define CONFIG_WIFIVE_MINI
+//#define CONFIG_WIFIVE
+#define CONFIG_WIFIVE_MINI
+
+#define USE_EVENTS
 
 /******************************************************************************
  * 
@@ -36,7 +38,7 @@
   #define RTC_BACKUP
   #define RTC_TEMP_OFFSET 0
   
-//  #define BOARD_LED
+  #define BOARD_LED
   
   //#define NONE_TECHNICAL_ZERO
   
@@ -68,9 +70,9 @@
 //  #define LED_LAYOUT_HORIZONTAL
   #define LED_LAYOUT_VERTICAL
   
-//  #define LED_RGB
-  #define LED_RGBW
-  #define MATRIX_XXL
+  #define LED_RGB
+//  #define LED_RGBW
+//  #define MATRIX_XXL
   
 //  #define LED_DRIVER_APA102
 //  #define LED_DRIVER_APA104
@@ -81,10 +83,10 @@
 //  #define LED_DRIVER_LPD1886
 //  #define LED_DRIVER_LPD1886_8BIT
 //  #define LED_DRIVER_LPD8806
-//  #define LED_DRIVER_NEOPIXEL
+  #define LED_DRIVER_NEOPIXEL
 //  #define LED_DRIVER_P9813
 //  #define LED_DRIVER_PL9823
-  #define LED_DRIVER_SK6812
+//  #define LED_DRIVER_SK6812
 //  #define LED_DRIVER_SK6822
 //  #define LED_DRIVER_SK9822
 //  #define LED_DRIVER_SM16716

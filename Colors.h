@@ -51,4 +51,49 @@ const color_s defaultColors[] = {
   {0xEE, 0x82, 0xEE}  // 36 Violet
 };
 
+enum eColors : byte{
+  White,
+  Red,
+  Green,
+  Blue,
+  Cyan,
+  Magenta,
+  Yellow,
+  Amethyst,
+  Aqua,
+  BlueViolet,
+  Brown,
+  BurlyWood,
+  CadetBlue,
+  Coral,
+  Crimson,
+  ForestGreen,
+  Gold,
+  Goldenrod,
+  GreenYellow,
+  HotPink,
+  IndianRed,
+  Indigo,
+  LawnGreen,
+  Maroon,
+  MidnightBlue,
+  Orange,
+  OrangeRed,
+  Orchid,
+  PaleVioletRed,
+  Purple,
+  RoyalBlue,
+  SeaGreen,
+  SpringGreen,
+  SteelBlue,
+  Teal,
+  Turquoise,
+  Violet,
+  
+  color_rgb_continuous,
+  color_rgb_step,
+  color_max = color_rgb_step,
+  color_none
+};
+
 #endif

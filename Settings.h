@@ -26,6 +26,7 @@ struct MySettings {
 	time_t alarmTime2;
 	time_t nightOffTime;
 	time_t nightOnTime;
+  uint8_t event;
 };
 
 class Settings {
@@ -55,6 +56,8 @@ public:
 	void setNightOffTime(time_t nightOffTime);
 	time_t getNightOnTime();
 	void setNightOnTime(time_t nightOnTime);
+  uint8_t getEvent();
+  void setEvent(byte event);
 	void resetToDefault();
 	void loadFromEEPROM();
 	void saveToEEPROM();

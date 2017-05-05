@@ -29,6 +29,9 @@ typedef enum eMode : uint8_t {
 #ifdef LDR
 	EXT_MODE_LDR,
 #endif
+#ifdef USE_EVENTS
+  EXT_MODE_EVT,
+#endif
 	EXT_MODE_BRIGHTNESS,
 	EXT_MODE_COLOR,
 	EXT_MODE_TIMEOUT,

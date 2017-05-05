@@ -104,6 +104,14 @@ void Settings::setNightOnTime(time_t nightOnTime) {
 	mySettings.nightOnTime = nightOnTime;
 }
 
+uint8_t Settings::getEvent() {
+  return mySettings.event;
+}
+
+void Settings::setEvent(byte event) {
+  mySettings.event = event;
+}
+
 
 // Setzt alle Werte auf Defaulteinstellungen
 void Settings::resetToDefault() {
@@ -121,6 +129,7 @@ void Settings::resetToDefault() {
 	mySettings.alarmTime2 = 0;
 	mySettings.nightOffTime = 0;
 	mySettings.nightOnTime = 0;
+  mySettings.event = 0;
 	saveToEEPROM();
 }
 

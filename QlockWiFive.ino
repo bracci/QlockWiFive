@@ -33,6 +33,10 @@ Eine Firmware der Selbstbau-QLOCKTWO.
 #endif
 #include "Settings.h"
 
+#ifdef USE_EVENTS
+#include "Events.h"
+#endif
+
 #define FIRMWARE_VERSION "qw20170401"
 
 /******************************************************************************
@@ -325,6 +329,9 @@ void loop() {
 		case EXT_MODE_LDR:
 #endif
 		case EXT_MODE_COLOR:
+#ifdef USE_EVENTS
+    case EXT_MODE_EVT:
+#endif
 		case EXT_MODE_TIMEOUT:
 		case EXT_MODE_LANGUAGE:
 		case EXT_MODE_TIMESET:
@@ -443,6 +450,36 @@ if(ledBrightness != ledBrightnessOld) {
 		ScreenBufferNeedsUpdate = false;
 		switch (mode) {
 		case STD_MODE_NORMAL:
+#ifdef USE_EVENTS
+      for (byte evtID = 0; evtID < nbrOfEvts; evtID++) {
+        if ((day() == events[evtID].getDate()) & (month() == events[evtID].getMonth())) {
+          switch (settings.getEvent()) {
+            case 0:
+              while (!(minute() % 5)) {
+                events[evtID].show();
+              }
+              break;
+            case 1:
+              while (!(minute() % 15)) {
+                events[evtID].show();
+              }
+              break;
+            case 2:
+              while (!(minute() % 30)) {
+                events[evtID].show();
+              }
+              break;
+            case 3:
+              while (!(minute() % 60)) {
+                events[evtID].show();
+              }
+              break;
+            default:
+              break;
+          }
+        }
+      }
+#endif
 			renderer.clearScreenBuffer(matrix);
 			renderer.setTime(hour(), minute(), settings.getLanguage(), matrix);
 			renderer.setCorners(minute(), matrix);
@@ -542,15 +579,23 @@ if(ledBrightness != ledBrightnessOld) {
 			renderer.setSmallText("IN", Renderer::TEXT_POS_BOTTOM, matrix);
 			break;
 #ifdef LDR
-		case EXT_MODE_LDR:
-			renderer.clearScreenBuffer(matrix);
-			renderer.setSmallText("LD", Renderer::TEXT_POS_TOP, matrix);
-			if (second() % 2 == 0) for (uint8_t i = 5; i < 10; i++) matrix[i] = 0;
-			else {
-				if (settings.getUseLdr()) renderer.setSmallText("EN", Renderer::TEXT_POS_BOTTOM, matrix);
-				else renderer.setSmallText("DA", Renderer::TEXT_POS_BOTTOM, matrix);
-			}
-			break;
+    case EXT_MODE_LDR:
+      renderer.clearScreenBuffer(matrix);
+      renderer.setSmallText("LD", Renderer::TEXT_POS_TOP, matrix);
+      if (second() % 2 == 0) for (uint8_t i = 5; i < 10; i++) matrix[i] = 0;
+      else {
+        if (settings.getUseLdr()) renderer.setSmallText("EN", Renderer::TEXT_POS_BOTTOM, matrix);
+        else renderer.setSmallText("DA", Renderer::TEXT_POS_BOTTOM, matrix);
+      }
+      break;
+#endif
+#ifdef USE_EVENTS
+    case EXT_MODE_EVT:
+      renderer.clearScreenBuffer(matrix);
+      renderer.setSmallText("EV", Renderer::TEXT_POS_TOP, matrix);
+      if (second() % 2 == 0) for (uint8_t i = 5; i < 10; i++) matrix[i] = 0;
+      else renderer.setSmallText(sEvtRep[settings.getEvent()], Renderer::TEXT_POS_BOTTOM, matrix);
+      break;
 #endif
 		case EXT_MODE_BRIGHTNESS:
 			renderer.clearScreenBuffer(matrix);
@@ -799,6 +844,12 @@ void buttonPlusPressed() {
 		settings.toggleUseLdr();
 		break;
 #endif
+#ifdef USE_EVENTS
+  case EXT_MODE_EVT:
+    if (settings.getEvent() < EVT_REP_COUNT - 1) settings.setEvent(settings.getEvent() + 1);
+    else settings.setEvent(0);
+    break;
+#endif
 	case EXT_MODE_BRIGHTNESS:
 		settings.setBrightness(constrain(settings.getBrightness() + 10, 0, 255));
 		DEBUG_PRINTLN(settings.getBrightness());
@@ -898,6 +949,12 @@ void buttonMinusPressed() {
 	case EXT_MODE_LDR:
 		settings.toggleUseLdr();
 		break;
+#endif
+#ifdef USE_EVENTS
+  case EXT_MODE_EVT:
+    if (settings.getEvent() > 0) settings.setEvent(settings.getEvent() - 1);
+    else settings.setEvent(EVT_REP_COUNT - 1);
+    break;
 #endif
 	case EXT_MODE_BRIGHTNESS:
 		settings.setBrightness(constrain(settings.getBrightness() - 10, 0, 255));
