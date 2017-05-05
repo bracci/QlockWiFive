@@ -630,8 +630,8 @@ if(ledBrightness != ledBrightnessOld) {
 			renderer.clearScreenBuffer(matrix);
 			if (second() % 2 == 0) {
 				renderer.setTime(hour(settings.getNightOffTime()), minute(settings.getNightOffTime()), settings.getLanguage(), matrix);
-				renderer.setAMPM(hour(settings.getNightOffTime()), settings.getLanguage(), matrix);
 				renderer.clearEntryWords(settings.getLanguage(), matrix);
+				renderer.setAMPM(hour(settings.getNightOffTime()), settings.getLanguage(), matrix);
 			}
 			break;
 		case EXT_MODE_TEXT_NIGHTON:
@@ -643,8 +643,8 @@ if(ledBrightness != ledBrightnessOld) {
 			renderer.clearScreenBuffer(matrix);
 			if (second() % 2 == 0) {
 				renderer.setTime(hour(settings.getNightOnTime()), minute(settings.getNightOnTime()), settings.getLanguage(), matrix);
-				renderer.setAMPM(hour(settings.getNightOnTime()), settings.getLanguage(), matrix);
 				renderer.clearEntryWords(settings.getLanguage(), matrix);
+				renderer.setAMPM(hour(settings.getNightOnTime()), settings.getLanguage(), matrix);
 			}
 			break;
 		case EXT_MODE_TEXT_TEST:
