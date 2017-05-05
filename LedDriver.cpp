@@ -225,6 +225,36 @@ void LedDriver::setPixel(uint8_t num, uint8_t color) {
         break;
       }
     }
+    #else
+    if (num < 110) {
+      if ((num / 10) % 2 == 0) {
+        leds[num] = ledColor_rgb;
+      }
+      else {
+        leds[((num / 10) * 10) + 9 - (num % 10)] = ledColor_rgb;
+      }
+    }
+    else {
+      switch (num) {
+      case 110:
+        leds[112] = ledColor_rgb;
+        break;
+      case 111:
+        leds[111] = ledColor_rgb;
+        break;
+      case 112:
+        leds[110] = ledColor_rgb;
+        break;
+      case 113:
+        leds[113] = ledColor_rgb;
+        break;
+      case 114:
+        leds[114] = ledColor_rgb;
+        break;
+      default:
+        break;
+      }
+    }
     #endif
   #endif // LED_RGBW
 #endif
