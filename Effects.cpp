@@ -27,6 +27,7 @@ void Effects::showTickerString(const char* str2disp, byte tickerSpeed, eColors c
   byte offsetV = 2;
   bool finish = false;
   unsigned int i = 0;
+  unsigned int temp_shift = 0;
 
   while (!finish) {
     renderer.clearScreenBuffer(matrix);
@@ -40,7 +41,7 @@ void Effects::showTickerString(const char* str2disp, byte tickerSpeed, eColors c
       else {
         shift -= stabenBig[lastChar - '!'][7];
         for (byte j = 0; j < 7; j++) {
-          unsigned int temp_shift = (1 - shift + i);
+          temp_shift = (1 - shift + i);
           if(temp_shift < 16){
             matrix[offsetV + j] |= (stabenBig[actChar - '!'][j] << temp_shift) & 0b1111111111100000;
           }
