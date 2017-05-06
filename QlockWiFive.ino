@@ -1,5 +1,5 @@
 /******************************************************************************
-QLOCKWORK
+QlockWiFive
 Eine Firmware der Selbstbau-QLOCKTWO.
 
 @mc      ESP8266
