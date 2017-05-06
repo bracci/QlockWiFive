@@ -1487,12 +1487,12 @@ boolean Renderer::isNumber(char symbol) {
 
 // Einen Pixel in den Screenbuffer schreiben
 void Renderer::setPixelInScreenBuffer(uint8_t x, uint8_t y, word matrix[16]) {
-	bitSet(matrix[y], x);
+	bitSet(matrix[y], 15-x);
 }
 
 // Einen Pixel aus dem Screenbuffer loeschen
 void Renderer::unsetPixelInScreenBuffer(uint8_t x, uint8_t y, word matrix[16]) {
-	bitClear(matrix[y], x);
+	bitClear(matrix[y], 15-x);
 }
 
 // Screenbuffer loeschen
