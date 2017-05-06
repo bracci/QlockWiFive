@@ -26,7 +26,7 @@
 #include "Arduino.h"
 #include "LedDriverBase.h"
 #include "Colors.h"
-#include <Adafruit_NeoPixel_RGBW.h>
+#include <Adafruit_NeoPixel.h>
 
 class LedDriverNeoPixel : public LedDriverBase {
 public:
@@ -61,7 +61,7 @@ private:
     byte _brightnessScaleColor(byte colorPart);
 
     byte _dataPin;
-    Adafruit_NeoPixel_RGBW *_strip;
+    Adafruit_NeoPixel *_strip;
 };
 
 #endif
