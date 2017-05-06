@@ -39,7 +39,7 @@
  */
 LedDriverNeoPixel::LedDriverNeoPixel(byte dataPin) {
     _dataPin = dataPin;
-    _strip = new Adafruit_NeoPixel_RGBW(NUM_PIXEL, _dataPin, NEO_GRBW + NEO_KHZ800);
+    _strip = new Adafruit_NeoPixel(NUM_PIXEL, _dataPin, NEO_GRBW + NEO_KHZ800);
     _strip->begin();
     setColor(250, 255, 200);
 }
